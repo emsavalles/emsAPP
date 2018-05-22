@@ -343,7 +343,7 @@
             </f7-list-item>
             <f7-preloader v-show="processing==1"></f7-preloader>
             <f7-list media-list>
-              <f7-list-item v-for="item in items" :title="item.title||item.tipo" :subtitle="item._date + ' ' + item._hour" :header="item._date" :footer="item._date" :text="item.abstract" :link="'/leer/'+seccion+'/'+item.previd"></f7-list-item>
+              <f7-list-item v-for="item in items" :title="item.title||item.tipo" :text="item.abstract" :link="'/leer/'+seccion+'/'+item.previd"></f7-list-item>
             </f7-list>
           </f7-list>
           <f7-buttons>
