@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Security-Policy" content="img-src * 'self' data: https:; default-src *; style-src 'self' http://* 'unsafe-inline'; script-src 'self' http://* 'unsafe-inline' 'unsafe-eval'">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    <link rel="stylesheet" href="f7-vue/css/framework7.ios.min.css">
+    <link rel="stylesheet" href="f7-vue/css/framework7.ios.colors.min.css">
+    <link rel="stylesheet" href="css/app.css">
+  </head>
+  <body>
+    <div id="logdiv"></div>
+    <div id="app">
+      <f7-statusbar></f7-statusbar>
+      <f7-panel left reveal layout="white">
+        <div id="menu">
+          <div class="logo"><img src="assets/img/logo emsavalles.png"></div>
+          <div class="le-menu">
+            <f7-list media-list>
+              <f7-list-item link="/inicio" media="&lt;img src='assets/icons/news.gif'&gt;" title="Noticias"></f7-list-item>
+              <!--f7-list-item(link="/mapas/", media="<img src='assets/icons/maps.gif'>", title="Mapas")-->
+              <f7-list-item link="/revistas/" media="&lt;img src='assets/icons/open_book.gif'&gt;" title="Revista"></f7-list-item>
+              <!--f7-list-item(title="Secciones" divider)-->
+              <f7-list-item link="/cine/" media="&lt;img src='assets/icons/film-roll.gif'&gt;" title="Cartelera de Cinemex"></f7-list-item>
+              <f7-list-item link="/masinfo/nacional" media="&lt;img src='assets/icons/news.gif'&gt;" title="Nacionales"></f7-list-item>
+              <f7-list-item link="/masinfo/espectaculos" media="&lt;img src='assets/icons/microphone.gif'&gt;" title="Espectáculos"></f7-list-item>
+              <f7-list-item link="/masinfo/deportes" media="&lt;img src='assets/icons/trofeo.gif'&gt;" title="Deportes"></f7-list-item>
+              <f7-list-item link="/masinfo/policia" media="&lt;img src='assets/icons/security.gif'&gt;" title="Policía"></f7-list-item>
+              <f7-list-item link="/carton/" media="&lt;img src='assets/icons/pencil.gif'&gt;" title="Cartón"></f7-list-item>
+              <f7-list-item link="/buscar/" media="&lt;img src='assets/icons/search.gif'&gt;" title="Buscar"></f7-list-item>
+            </f7-list>
+          </div>
+        </div>
+      </f7-panel>
+      <f7-views>
+        <f7-view id="main-view" navbar-through :dynamic-navbar="true" main>
+          <f7-navbar v-if="$theme.ios">
+            <!--f7-nav-leftf7-link(icon="icon-bars" open-panel="left")      
+            -->
+            <f7-nav-center sliding>emsavalles.com</f7-nav-center>
+            <f7-nav-right>
+              <f7-link icon="icon-bars" open-panel="left"></f7-link>
+            </f7-nav-right>
+          </f7-navbar>
+          <f7-pages>
+            <init-app>
+              <!--f7-navbar(v-if="$theme.material")
+              f7-nav-left
+                f7-link(icon="icon-bars", open-panel="left")          
+              f7-nav-center(sliding) Framework7
+              f7-nav-right
+                f7-link(icon="icon-bars", open-panel="right")
+              
+              -->
+              <!--
+              f7-block-title Welcome to my App
+              f7-block(inner)
+                p Duis sed erat ac eros ultrices pharetra id ut tellus. Praesent rhoncus enim ornare ipsum aliquet ultricies. Pellentesque sodales erat quis elementum sagittis.
+              
+              f7-block-title Navigation
+              f7-list
+                f7-list-item(link="/about/" title="About")
+                f7-list-item(link="/form/" title="Form")
+                f7-list-item(link="/dynamic-route/blog/45/post/125/?foo=bar#about", title="Dynamic Route")
+              
+              f7-block-title Side Panels
+              f7-block
+                f7-grid
+                  f7-col(width="50")
+                    f7-button(open-panel="left") Left Panel            
+                  f7-col(width="50")
+                    f7-button(open-panel="right") Right Panel        
+              f7-block-title Modals
+              f7-block
+                f7-grid
+                  f7-col(width="50")
+                    f7-button(open-popup="#popup") Popup            
+                  f7-col(width="50")
+                    f7-button(open-login-screen="#login-screen") Login Screen
+              -->
+            </init-app>
+          </f7-pages>
+        </f7-view>
+      </f7-views>
+      <div id="loader"></div>
+    </div>
+    <template id="init-app">
+      <f7-page pull-to-refresh @ptr:refresh="onRefresh">
+        <div class="row">
+          <div class="col-100 tablet-50">
+            <f7-card class="news-main" :inner="false">
+              <f7-card-header>
+                <figure>
+                  <f7-link :href="'/leer/noticias/'+nota.previd"><img :src="carpeta+imagen+'.jpg'" :alt="nota.title"></f7-link>
+                </figure>
+              </f7-card-header>
+              <f7-card-content>
+                <f7-link :href="'/leer/noticias/'+nota.previd">{{nota.title}}</f7-link>
+              </f7-card-content>
+              <f7-card-footer>
+                <p class="small-screen">{{nota.abstract}}</p>
+                <!--div.long-screen.pre-line() {{nota.content}}-->
+                <div>
+                  <div>{{nota._date}}</div>
+                  <div>{{nota._hour}}    </div>
+                </div>
+              </f7-card-footer>
+            </f7-card>
+          </div>
+          <div class="col-100 tablet-50">
+            <f7-list media-list>
+              <f7-list-item v-for="item in items" :link="'/leer/noticias/'+item.previd" :media="'&lt;figure&gt;&lt;img src=&quot;http://emsavalles.com/CGI-BIN/fotos/'+item.images[0].name+'.jpg&quot;&gt;&lt;/figure&gt;'" :title="item.title" :text="item.abstract" after=""></f7-list-item>
+            </f7-list>
+            <f7-buttons>
+              <f7-button :disabled="index==0" @click="anterior()">Anterior</f7-button>
+              <f7-button @click="siguiente()">Siguiente</f7-button>
+            </f7-buttons>
+          </div>
+        </div>
+      </f7-page>
+    </template>
+    <script id="principal" type="x/template">
+      <f7-card class="news-main" :inner="false">
+        <f7-card-header><img :src="'http://emsavalles.com/CGI-BIN/fotos/'+nota.imagen+'.jpg'" alt=""></f7-card-header>
+        <f7-card-content>
+          <p>{{nota.title}}</p>
+        </f7-card-content>
+        <f7-card-footer>
+          <p>{{nota.abstract}}</p>
+          <div>
+            <div>{{nota._date}}</div>
+            <div>{{nota._hour}}</div>
+          </div>
+        </f7-card-footer>
+      </f7-card>
+    </script>
+    <template id="page-leer">
+      <f7-page>
+        <f7-navbar :title="nota.title" back-link="" sliding>
+          <f7-nav-right>
+            <f7-link icon="icon-bars" open-panel="left"></f7-link>
+          </f7-nav-right>
+        </f7-navbar>
+        <f7-block inner>
+          <!--sharer(:section="seccion",:title="nota.title",:id="myId",:slug='nota.slug')-->
+          <f7-card class="news-main" :inner="false">
+            <f7-card-header>
+              <f7-swiper pagination next-button prev-button scrollbar v-if="nota.images.length&gt;1">
+                <f7-swiper-slide v-for="image in nota.images"><img :src="carpeta+image.name+'.jpg'" :alt="nota.title"></f7-swiper-slide>
+              </f7-swiper><img :src="carpeta+nota.images[0].name+'.jpg'" :alt="nota.title" v-if="nota.images.length==1">
+            </f7-card-header>
+            <f7-card-content>
+              <p>{{nota.title}}</p>
+            </f7-card-content>
+            <f7-card-footer>
+              <div>
+                <div>{{nota._date}}</div>
+                <div>{{nota._hour}}   </div>
+              </div>
+              <div class="pre-line">{{nota.content}}</div>
+            </f7-card-footer>
+          </f7-card>
+        </f7-block>
+      </f7-page>
+    </template>
+    <template id="template-revistas">
+      <f7-page pull-to-refresh @ptr:refresh="onRefresh">
+        <f7-navbar title="Semanario emsavalles" back-link="" sliding>
+          <f7-nav-right>
+            <f7-link icon="icon-bars" open-panel="left"></f7-link>
+          </f7-nav-right>
+        </f7-navbar>
+        <f7-block inner>
+          <f7-list media-list>
+            <f7-list-item v-for="item in items" :link="'/revista/'+item.id" :media="'&lt;figure&gt;&lt;img src=&quot;http://emsavalles.com/CGI-BIN/revista/portadas/'+item.image+'.jpg&quot;&gt;&lt;figure&gt;'" :title="'#'+item.edicion" :text="item.title" after="Leer más"></f7-list-item>
+          </f7-list>
+          <f7-buttons>
+            <f7-button :disabled="index==0" @click="anterior()">Anterior</f7-button>
+            <f7-button @click="siguiente()">Siguiente</f7-button>
+          </f7-buttons>
+        </f7-block>
+      </f7-page>
+    </template>
+    <template id="template-revista">
+      <f7-page pull-to-refresh @ptr:refresh="onRefresh">
+        <f7-navbar :title="title" back-link="" sliding>
+          <f7-nav-right>
+            <f7-link icon="icon-bars" open-panel="left"></f7-link>
+          </f7-nav-right>
+        </f7-navbar>
+        <f7-block inner>
+          <h4>{{edicion.title}}</h4>
+          <div class="revista">
+            <f7-swiper next-button prev-button>
+              <f7-swiper-slide v-for="(item,index) in edicion.paginas">
+                <f7-card class="news-main" :inner="false">
+                  <f7-card-header>    <img :src="'http://emsavalles.com/CGI-BIN/columnas/'+item.imagen+'.jpg'" :alt="item.title"></f7-card-header>
+                  <f7-card-content>
+                    <p> <span v-if="item.title==''">{{item.tipo}}</span>{{item.title}}</p>
+                  </f7-card-content>
+                  <f7-card-footer>
+                    <div></div>
+                    <div class="pre-line">{{item.content}}</div>
+                  </f7-card-footer>
+                </f7-card>
+              </f7-swiper-slide>
+            </f7-swiper>
+          </div>
+        </f7-block>
+      </f7-page>
+    </template>
+    <template id="template-cine">
+      <f7-page pull-to-refresh @ptr:refresh="onRefresh">
+        <f7-navbar title="Cartelera de cine" back-link="" sliding>
+          <f7-nav-right>
+            <f7-link icon="icon-bars" open-panel="left"></f7-link>
+          </f7-nav-right>
+        </f7-navbar>
+        <f7-block inner>
+          <f7-list media-list>
+            <f7-list-item v-for="item in items" :link="'/pelicula/'+item.id" :media="'&lt;figure&gt;&lt;img src=&quot;http://emsavalles.com/CGI-BIN/cine/'+item.image+'.jpg&quot;&gt;&lt;figure&gt;'" :title="item.title" :text="item.summary" after="Leer más"></f7-list-item>
+          </f7-list>
+        </f7-block>
+      </f7-page>
+    </template>
+    <template id="template-pelicula">
+      <f7-page pull-to-refresh @ptr:refresh="onRefresh">
+        <f7-navbar :title="title" back-link="" sliding>
+          <f7-nav-right>
+            <f7-link icon="icon-bars" open-panel="left"></f7-link>
+          </f7-nav-right>
+        </f7-navbar>
+        <f7-block inner>
+          <f7-card v-if="item.image!=''">
+            <f7-card-header>  
+              <div class="div-centered">    <img :src="'http://emsavalles.com/CGI-BIN/cine/'+item.image+'.jpg'" :alt="item.title"></div>
+            </f7-card-header>
+            <f7-card-content></f7-card-content>
+            <f7-card-footer>
+              <f7-swiper pagination next-button prev-button scrollbar>
+                <f7-swiper-slide>
+                  <h3>Sinópsis</h3>
+                  <div class="pre-line">{{item.content}}</div>
+                </f7-swiper-slide>
+                <f7-swiper-slide>
+                  <h3>Complejo Ciudad Valles</h3>
+                  <div class="pre-line">{{item.valles}}</div>
+                </f7-swiper-slide>
+                <f7-swiper-slide>
+                  <h3>Complejo El Paseo, S.L.P.</h3>
+                  <div class="pre-line">{{item.paseo}}</div>
+                </f7-swiper-slide>
+                <!--f7-swiper-slide
+                .trailer
+                  f7-link(external, :href="'https://www.youtube.com/watch?v='+item.trailer")
+                    .logoyt
+                      img(src="assets/icons/yt64.png")
+                    figure
+                      img(:src="'https://img.youtube.com/vi/'+item.trailer+'/maxresdefault.jpg'")
+                -->
+              </f7-swiper>
+            </f7-card-footer>
+          </f7-card>
+        </f7-block>
+      </f7-page>
+    </template>
+    <template id="template-masinfo">
+      <f7-page pull-to-refresh @ptr:refresh="onRefresh">
+        <f7-navbar :title="title" back-link="" sliding>
+          <f7-nav-right>
+            <f7-link icon="icon-bars" open-panel="left"></f7-link>
+          </f7-nav-right>
+        </f7-navbar>
+        <f7-block inner>
+          <f7-list media-list>
+            <f7-list-item v-for="item in items" :link="'/leer/'+op+'/'+item.previd" :media="'&lt;figure&gt;&lt;img src=&quot;http://emsavalles.com/CGI-BIN/fotos/'+item.images[0].name+'.jpg&quot;&gt;&lt;/figure&gt;'" :title="item.title" :text="item.abstract" after="Leer más"></f7-list-item>
+          </f7-list>
+          <f7-buttons>
+            <f7-button :disabled="index==1" @click="anterior()">Anterior</f7-button>
+            <f7-button @click="siguiente()">Siguiente</f7-button>
+          </f7-buttons>
+        </f7-block>
+      </f7-page>
+    </template>
+    <template id="template-carton">
+      <f7-page pull-to-refresh @ptr:refresh="onRefresh">
+        <f7-navbar title="El Cartón" back-link="" sliding>
+          <f7-nav-right>
+            <f7-link icon="icon-bars" open-panel="left"></f7-link>
+          </f7-nav-right>
+        </f7-navbar>
+        <f7-block inner>
+          <popup class="carton" :show="show_popup"><img class="carton-thumb" :src="thumb">
+            <sharer :section="seccion" :title="title" :id="myId" :slug="slug" :file="file"></sharer>
+          </popup>
+          <div class="row">
+            <div class="col-100 tablet-33" v-for="(item,index) in items">
+              <f7-link @click="max(index)"><img class="carton-thumb" :src="'http://emsavalles.com/CGI-BIN/carton/'+item.nombre"></f7-link>
+            </div>
+          </div>
+          <!--f7-list(media-list)      
+          f7-list-item(
+            v-for="item in items"
+            :media="'<figure><img  class=\"popup-open\" src=\"http://emsavalles.com/CGI-BIN/carton/'+item.nombre+'\"></figure>'"
+            :text="item.titulo"
+            @click="max(item.nombre)"
+            
+          )
+          -->
+          <f7-buttons>
+            <f7-button :disabled="index==1" @click="anterior()">Anterior</f7-button>
+            <f7-button @click="siguiente()">Siguiente</f7-button>
+          </f7-buttons>
+        </f7-block>
+      </f7-page>
+    </template>
+    <template id="template-buscar">
+      <f7-page>
+        <f7-navbar title="Buscar en emsavalles" back-link="" sliding>
+          <f7-nav-right>
+            <f7-link icon="icon-bars" open-panel="left"></f7-link>
+          </f7-nav-right>
+        </f7-navbar>
+        <f7-block inner>
+          <f7-list form>
+            <f7-list-item>
+              <f7-label>Sección</f7-label>
+              <f7-input type="select" v-model="seccion" @change="busca">
+                <option value="noticias">Noticias</option>
+                <option value="deportes">Deportes</option>
+                <option value="espectaculos">Espectáculos</option>
+                <option value="policia">Policía</option>
+                <option value="nacional">Nacional</option>
+                <option value="paginas">Revista</option>
+              </f7-input>
+            </f7-list-item>
+            <f7-list-item>
+              <f7-input v-model="palabras" type="search" placeholder="Escriba lo que desea buscar"></f7-input>
+              <f7-button @click="busca">Buscar</f7-button>
+            </f7-list-item>
+            <f7-preloader v-show="processing==1"></f7-preloader>
+            <f7-list media-list>
+              <f7-list-item v-for="item in items" :title="item.title||item.tipo" :subtitle="item._date + ' ' + item._hour" :header="item._date" :footer="item._date" :text="item.abstract" :link="'/leer/'+seccion+'/'+item.previd"></f7-list-item>
+            </f7-list>
+          </f7-list>
+          <f7-buttons>
+            <f7-button :disabled="index==1" @click="anterior()">Anterior</f7-button>
+            <f7-button @click="siguiente()">Siguiente</f7-button>
+          </f7-buttons>
+        </f7-block>
+      </f7-page>
+    </template>
+    <template id="template-custom-preloader">
+      <div class="custom-preloader" v-if="cargando">
+        <f7-preloader></f7-preloader>
+      </div>
+    </template>
+    <template id="template-custom-sharer">
+      <f7-fab class="comparteme" @click="share">
+        <f7-icon><img src="assets/icons/share-icons-sharer.gif"></f7-icon>
+      </f7-fab>
+    </template>
+    <template id="template-mapas">
+      <f7-page>
+        <f7-navbar title="Mapa" back-link="">
+          <f7-nav-right>
+            <f7-link icon="icon-bars" open-panel="left"></f7-link>
+          </f7-nav-right>
+        </f7-navbar>
+        <f7-block inner>
+          <f7-list form>
+            <f7-list-item>
+              <f7-label>Lugar</f7-label>
+              <f7-input v-model="data.text" type="search" placeholder="oxxo,devolada"></f7-input>
+            </f7-list-item>
+            <f7-list-item>
+              <f7-label>Distancia (kms)</f7-label>
+              <f7-input v-model="data.kms" type="number" min="0" placeholder="1"></f7-input>
+            </f7-list-item>
+            <f7-list-item>
+              <f7-label>Cantidad</f7-label>
+              <f7-input v-model="data.cuantos" type="number" min="0" placeholder="15"></f7-input>
+            </f7-list-item>
+            <f7-list-item>
+              <f7-button @click="buscar()">Buscar</f7-button>
+            </f7-list-item>
+          </f7-list>
+          <!--f7-searchbar(
+          disable-link-text="Cancel"
+          placeholder="Buscar en mapas"
+          :clear-button="true")
+          
+          -->
+          <!--google-map(name="example")-->
+          <div class="google-map" id="example"></div>
+        </f7-block>
+      </f7-page>
+    </template>
+    <template id="template-mapa">
+      <div>
+        <button @click="centerme()" v-if="showLocateButton">sds</button>
+        <div class="google-map" :id="mapName"></div>
+      </div>
+    </template>
+    <template id="template-custom-popup">
+      <div class="custom-popup" v-if="show">
+        <div class="popup-box">
+          <p @click="close">Cerrar</p>
+          <slot></slot>
+        </div>
+      </div>
+    </template>
+    <script type="text/javascript" src="js/f.js"></script>
+    <script type="text/javascript" src="cordova.js"></script>
+    <script src="f7-vue/js/framework7.min.js"></script>
+    <script src="f7-vue/js/vue.min.js"></script>
+    <script src="f7-vue/js/vue-resource.min.js"></script>
+    <script src="f7-vue/js/framework7-vue.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCWb6B9lpoOcP4d5BZgZNDU66TG1dV4W44"></script>
+    <script src="js/app-dist.js"></script>
+  </body>
+</html>
