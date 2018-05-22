@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.phonegap.helloworld" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>emsavalles</name>
+    <name>Emsavalles</name>
     <description>
         Entérate de la información más importante de Ciudad Valles, S.L.P. y la Huasteca potosina con la aplicación oficial de emsavalles.com
     </description>
